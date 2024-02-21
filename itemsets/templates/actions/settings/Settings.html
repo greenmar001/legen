@@ -1,0 +1,264 @@
+{*
+ * @author Gaponov Igor <gapon2401@gmail.com>
+ *}
+    {* Switcher *}
+    <link rel="stylesheet" href="{$wa_url}wa-content/js/jquery-plugins/ibutton/jquery.ibutton.min.css?v={$wa->version()}">
+    <script src="{$wa_url}wa-content/js/jquery-plugins/ibutton/jquery.ibutton.min.js"></script>
+
+    {* Ace *}
+    <script type="text/javascript" src="{$wa_url}wa-content/js/ace/ace.js"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-wa/wa.elrte.ace.js"></script>
+
+    <link rel="stylesheet" href="{$plugin_url}css/itemsets.css?v={$wa->version()}">
+    <script type="text/javascript" src="{$plugin_url}js/itemsets.js?v={$wa->version()}"></script>
+
+    <h1>[`Product-sets`]</h1>
+    <div class="fields form">
+        <form action="about:blank" id="itemsets-form">
+            {$wa->csrf()}
+            <div class="field-group">
+                <div class="field">
+                    <div class="name">[`Plugin status`]:</div>
+                    <div class="value">
+                        <div class="ibutton-checkbox">
+                            <ul class="menu-h">
+                                <li>
+                                    <span class="switcher-off-label">[`Off`]</span>
+                                </li>
+                                <li>
+                                    <input class="switcher enable-plugin" type="checkbox" name="settings[enable]" value="1" {if (isset($settings['enable']) && $settings['enable'] !== '0') || !isset($settings['enable'])}checked="checked"{/if} />
+                                </li>
+                                <li>
+                                    <span class="switcher-on-label">[`On`]</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field-group{if isset($settings['enable']) && $settings['enable'] == 0} hidden{/if}">
+                <div class="field">
+                    <div class="name">[`Show set items (default value)`]:</div>
+                    <div class="value">
+                        <label><input type="radio" name="settings[show_items]" value="1" {if !isset($settings.show_items) || $settings.show_items == '1'}checked{/if} /> [`Yes`]</label>
+                        <label><input type="radio" name="settings[show_items]" value="0" {if isset($settings.show_items) && $settings.show_items == '0'}checked{/if}/> [`No`]</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">[`Control product stocks count (default value)`]:</div>
+                    <div class="value">
+                        <label><input type="radio" name="settings[control_stocks]" value="1" {if !isset($settings.control_stocks) || $settings.control_stocks == '1'}checked{/if} /> [`Yes`]</label>
+                        <label><input type="radio" name="settings[control_stocks]" value="0" {if isset($settings.control_stocks) && $settings.control_stocks == '0'}checked{/if}/> [`No`]</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">[`Ask me while I'm saving the set, if I would like to recount product stocks, when "Control product stocks" is off`]:</div>
+                    <div class="value">
+                        <label><input type="radio" name="settings[ask_control]" value="1" {if !isset($settings.ask_control) || $settings.ask_control == '1'}checked{/if} /> [`Yes`]</label>
+                        <label><input type="radio" name="settings[ask_control]" value="0" {if isset($settings.ask_control) && $settings.ask_control == '0'}checked{/if}/> [`No`]</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">[`Automatically change product price, when set items prices and quantity change (default value)`]:</div>
+                    <div class="value">
+                        <label><input type="radio" name="settings[change_price]" {if !isset($settings.change_price) || $settings.change_price == '1'}checked{/if} value="1" /> [`Yes`]</label>
+                        <label><input type="radio" name="settings[change_price]"  {if isset($settings.change_price) && $settings.change_price == '0'}checked{/if} value="0" /> [`No`]</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">[`Allow customers to continue checkout, when product-set items are not enough in the stocks`]:</div>
+                    <div class="value">
+                        <div class="ibutton-checkbox">
+                            <ul class="menu-h">
+                                <li>
+                                    <span id="switcher-off-label">[`No`]</span>
+                                </li>
+                                <li>
+                                    <input class="switcher" type="checkbox" name="settings[allow_checkout]" value="1" {if !empty($settings['allow_checkout'])}checked="checked"{/if} />
+                                </li>
+                                <li>
+                                    <span id="switcher-on-label">[`Yes`]</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="hint">[`This option only works, when "Maximum number of items that can be added to shopping cart is limited by stock level" (see. <a href="?action=settings#/stock/">Stocking</a>). Otherwise, customers will be allowed to continue checkout`]</div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">[`Theme template file names, which will be used for output product-set items`]:</div>
+                    <div class="value">
+                        <textarea  name="settings[output_file]" cols="30" rows="20">{if !empty($settings['output_file'])}{$settings['output_file']}{/if}</textarea>
+                        <div class="hint">[`Example`], list-thumbs.html</div>
+                        <div class="hint">[`Use comma to separate the templates. If one of your template is found, it will be used for output.`]</div>
+                        <div class="hint">[`If option "Show set items" is enabled, you can customise the output of items. More info <a target="_blank" href="http://www.webasyst.com/store/plugin/shop/itemsets/product-set-items-output/">here</a>`]</div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">[`Product-set items output places`]:</div>
+                    <div class="value">
+                        <label><input type="checkbox" name="settings[output_places][]" value="menu"{if isset($settings.output_places) && in_array('menu', $settings.output_places)} checked{/if}  /> [`Next to links to custom product pages`]</label><br />
+                        <label><input type="checkbox" name="settings[output_places][]" value="cart"{if isset($settings.output_places) && in_array('cart', $settings.output_places)} checked{/if} /> [`Next to the "Add to cart" button`]</label><br />
+                        <label><input type="checkbox" name="settings[output_places][]" value="block_aux"{if isset($settings.output_places) && in_array('block_aux', $settings.output_places)} checked{/if} /> [`Custom informational block, usually in a sidebar`]</label><br />
+                        <label><input type="checkbox" name="settings[output_places][]" value="block"{if isset($settings.output_places) && in_array('block',$settings.output_places)} checked{/if} /> [`Block of extra product details in main description area`]</label>
+                        <div class="hint">[`Output places depend on your Theme template. Contact to your developer, if you would like to change it, or use <a href="http://www.webasyst.com/store/plugin/shop/itemsets/product-set-items-output/" target="_blank">Custom output</a>`]</div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">[`Ruble sign`]:</div>
+                    <div class="value">
+                        <label><input type="radio" name="settings[ruble]" value="html" {if (isset($settings.ruble) && $settings.ruble == 'html') || empty($settings.ruble)}checked='checked'{/if} /> <span class="ruble">Р</span></label> <br>
+                        <label><input type="radio" name="settings[ruble]" value="text" {if isset($settings.ruble) && $settings.ruble == 'text'}checked='checked'{/if} /> руб.</label>
+                    </div>
+                    <div class="value small">[`If your Currencies have ruble, you can check the output style`]</div>
+                </div>
+                <div class="field">
+                    <div class="name">[`Autosearch limit`]:</div>
+                    <div class="value">
+                        <select name="settings[search_limit]">
+                            <option value="10"{if (isset($settings.search_limit) && $settings.search_limit == '10') || !isset($settings.search_limit)} selected{/if}>10</option>
+                            <option value="20"{if (isset($settings.search_limit) && $settings.search_limit == '20')} selected{/if}>20</option>
+                            <option value="30"{if (isset($settings.search_limit) && $settings.search_limit == '30')} selected{/if}>30</option>
+                            <option value="40"{if (isset($settings.search_limit) && $settings.search_limit == '40')} selected{/if}>40</option>
+                            <option value="50"{if (isset($settings.search_limit) && $settings.search_limit == '50')} selected{/if}>50</option>
+                        </select>
+                        <div class="hint">[`The limit of autosearch items in the "Product set" tab`]</div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">[`CSS styles`]:<br><a href="javascript:void(0)" class="restore-styles css{if !$css_changed} hidden{/if}">([`restore original`])</a></div>
+                    <div class="value">
+                        <a href="javascript:void(0)" class="inline-link show-styles" data-toggle="[`Hide css styles`]"><b>[`Show css styles`]</b></a>
+                        <div style="margin-top: 10px; display: none;"><textarea id="itemsets-css" name="css">{$css}</textarea>
+                            <div class="ace">
+                                <div id="itemsets-css-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <a href="javascript:void(0)" class="inline-link f-toggle-html"><b>[`HTML before and after product-set`]</b></a>
+                <div class="field-group" style="display: none;">
+                    <div class="field" style="margin: 30px 0;">
+                        <div class="name">[`HTML before the product-set`]</div>
+                        <div class="value">
+                            <div class="wa-editor-core-wrapper s-editor-core-wrapper">
+                                <ul class="wa-editor-wysiwyg-html-toggle s-wysiwyg-html-toggle">
+                                    <li class="selected"><a class="wysiwyg" href="#">{_w('WYSIWYG')}</a></li>
+                                    <li><a class="html" href="#">HTML</a></li>
+                                </ul>
+                                <div>
+                                    <textarea style="display:none" name="settings[html_before]" class="editor-content" cols="30" rows="10">{if !empty($settings.html_before)}{$settings.html_before|escape}{/if}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="name">[`HTML after the product-set`]</div>
+                        <div class="value">
+                            <div class="wa-editor-core-wrapper s-editor-core-wrapper">
+                                <ul class="wa-editor-wysiwyg-html-toggle s-wysiwyg-html-toggle">
+                                    <li class="selected"><a class="wysiwyg" href="#">{_w('WYSIWYG')}</a></li>
+                                    <li><a class="html" href="#">HTML</a></li>
+                                </ul>
+                                <div>
+                                    <textarea style="display:none" name="settings[html_after]" class="editor-content" cols="30" rows="10">{if !empty($settings.html_after)}{$settings.html_after|escape}{/if}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="field">
+                    <div class="name">[`JS frontend locale`]:<br><a href="javascript:void(0)" data-id="itemsets-js" data-action="resetJs" data-message="[`Do you really want to restore original JS Frontend locale file?`]" class="restore-styles template template-js{if $js_changed} hidden{/if}" style="display: none;">([`restore original`])</a></div>
+                    <div class="value">
+                        <a href="javascript:void(0)" class="inline-link show-template" data-toggle="[`Hide JS frontend locale`]" data-class-name="js" data-action="jsLocale"><b>[`Edit JS frontend locale`]</b></a>
+                        <div style="margin-top: 10px; display: none;"></div>
+                    </div>
+                </div>
+                <hr />
+                <div class="field">
+                    <div class="name">[`Template "itemsets-list-table.html"`]:<br><a href="javascript:void(0)" data-id="itemsets-template-t1" data-action="resetTemplate" data-template="itemsets-list-table.html" data-message="[`Do you really want to restore original template file?`]" class="restore-styles template template-t1{if !empty($template_changed['itemsets-list-table.html'])} hidden{/if}" style="display: none;">([`restore original`])</a></div>
+                    <div class="value">
+                        <a href="javascript:void(0)" class="inline-link show-template" data-toggle="[`Hide template`]" data-class-name="t1" data-action="template" data-template="itemsets-list-table.html"><b>[`Edit template`]</b></a>
+                        <div style="margin-top: 10px; display: none;"></div>
+                        <div class="hint">[`This template shows items in a table`]</div>
+                    </div>
+                </div>
+                <hr />
+                <div class="field">
+                    <div class="name">[`Recount stocks`]:</div>
+                    <div class="value">
+                        <a href="javascript:void(0)" id="itemsets-recount"><i class="icon16" style="background: url({$plugin_url}/img/itemsets.png) no-repeat"></i> [`Recount stocks`]</a>
+                        <div class="hint">[`All stocks of product-sets, which has option "Control product stocks count" - "Yes", will be recounted. You'd better use this function, when you change Stocking settings or delete skus from products`]</div>
+                    </div>
+                </div>
+            </div>
+            <div class="field"><em class="errormsg"></em></div>
+            <div class="field"><input type="submit" id="itemsets-save" class="button green" value="[`Save`]" /></div>
+        </form>
+    </div>
+
+    <link type="text/css" rel="stylesheet" href="{$wa_url}wa-content/js/elrte/elrte.min.css"/>
+    <link type="text/css" rel="stylesheet" href="{$wa_url}wa-content/js/elrte/elrte-wa.css"/>
+    <script src="{$wa_url}wa-content/js/elrte/elrte.min.js"></script>
+    <script src="{$wa_url}wa-content/js/elrte/elrte-wa.js"></script>
+    {if $lang !== 'en'}<script src="{$wa_url}wa-content/js/elrte/i18n/elrte.{$lang}.js"></script>{/if}
+    <link type="text/css" rel="stylesheet" href="{$wa_url}wa-content/js/redactor/redactor.css">
+    <script src="{$wa_url}wa-content/js/redactor/redactor.min.js"></script>
+    {if $lang!='en'}<script src="{$wa_url}wa-content/js/redactor/{$lang}.js"></script>{/if}
+    <script src="{$wa_url}wa-content/js/jquery-wa/editor.js?v{$wa->version()}"></script>
+
+    <script type="text/javascript">
+        var wa_lang = '{$lang}';
+        var wa_csrf = '{$csrf}';
+        var wa_url = '{$wa_url}';
+        var wa_app = 'shop';
+        $(function () {
+            // Пересчет остатков
+            $("#itemsets-recount").click(function () {
+                if (!confirm("[`Do you really want to recount stocks for product-sets?`]")) {
+                    return false;
+                }
+                var i = $(this).find("i");
+                var oldImage = i.attr("style");
+                i.removeAttr("style").addClass("loading");
+                $.post("?plugin=itemsets&action=handler", {
+                    action: "recountStocks"
+                }, function (response) {
+                    if (typeof response.errors !== "undefined") {
+                        alert("[`Something wrong. Contact the developer: gapon2401@gmail.com`]");
+                        i.removeClass("loading").attr("style", oldImage);
+                    } else if (response.status == "ok") {
+                        i.removeClass("loading").addClass("yes");
+                        setTimeout(function () {
+                            i.removeClass("yes").attr("style", oldImage);
+                        }, 3000);
+                    } else {
+                        alert("[`Something wrong. Contact the developer: gapon2401@gmail.com`]");
+                        i.removeClass("loading").attr("style", oldImage);
+                    }
+                }, "json");
+                return false;
+            });
+
+            $.itemsets.initSettings();
+
+            waEditorAceInit({
+                'id': 'itemsets-css',
+                'ace_editor_container': 'itemsets-css-container',
+                'save_button': 'itemsets-save',
+                'type': 'css'
+            });
+            wa_editor.clearSelection();
+
+            $.itemsets.editor['itemsets-css'] = (wa_editor);
+            $.itemsets.editor['itemsets-css'].on('change', function () {
+                $("#itemsets-form .restore-styles.css").show();
+            });
+
+            $.wa.locale = $.extend(true, $.wa.locale, {
+                'Do you really want to restore original css styles?': '[`Do you really want to restore original css styles?`]',
+                'Something wrong': '[`Something wrong`]'
+            });
+        });
+    </script>

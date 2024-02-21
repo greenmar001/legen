@@ -1,0 +1,37 @@
+{$locale_data = [
+    'en_US' => [
+        'pcs' => 'pcs'
+    ],
+    'ru_RU' => [
+        'pcs' => 'шт'
+    ]
+]}
+
+{* SYSTEM FUNCTION. DON'T REMOVE / Системная функция. Не удалять  *}
+{function name=translate locale=$current_locale}
+    {if isset($message)}
+        {if isset($locale_data[$current_locale][$message])}
+            {$locale_data[$current_locale][$message]}
+        {else}
+            {$message}
+        {/if}
+    {/if}
+{/function}
+{* END / Конец *}
+
+{if !empty($products)}
+    <table class="itemsets-table">
+        {foreach $products as $p}
+        <tr>
+            <td>
+                <a href="{$p.frontend_url|escape}" title="{$p.name}{if $p.summary} – {strip_tags($p.summary)|escape}{/if}">
+                    {$p.name}
+                </a>
+            </td>
+            <td>
+                {$p.quantity} {translate message='pcs'}
+            </td>
+        </tr>
+        {/foreach}
+    </table>
+{/if}

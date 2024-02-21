@@ -1,0 +1,57 @@
+/* Сообщение об ошибке в корзине
+   Error field on cart page */
+.itemsets-errorfld { 
+    clear: both; 
+    position: relative;
+    margin: 5px 0; /* Внешние отступы */
+    text-align: center; /* Выравнивание */
+    color:#ff0000; /*  Цвет текста / Text color */
+    font-style: italic; /* Наклонный шрифт */
+    background: #eee; /* Цвет заднего фона */
+    padding: 5px 0; /* Внутренние отступы */
+    border: 1px solid #ff0000; /* Ширина, тип и цвет границ */
+}
+/* Зачеркнутая цена / Compare price */
+.itemsets-compare-price {
+    color: #a3a3a3; /* Цвет */
+    text-decoration: line-through;
+}
+
+table.itemsets-zebra { border: 0; margin: 0; width: 100%; }
+table.itemsets-zebra tr:nth-child(odd) td { 
+    background: #f2f7ff; /* Цвет нечетных строк / Color of odd rows */
+} 
+table.itemsets-zebra td { 
+    padding: 5px; 
+    border: 0; 
+    vertical-align: middle; 
+    background: #fff; /* Цвет четных строк / color of even rows */ 
+}
+table.itemsets-zebra th { 
+    text-align: left; 
+    padding: 2px 5px; 
+    border-bottom: 1px solid #BBBBBB; /* Ширина, тип и цвет нижней границы заголовка / Width, style and color of the bottom border of heading */
+    background: #eee; /* Цвет заголовка таблицы / Color of table heading */ 
+    color: #777; /* Цвет текста заголовков Color of heading text */
+    font-weight: normal;  
+}
+/* Шаблон itemsets-list-table.html / Template itemsets-list-table.html */
+table.itemsets-zebra th.align-right { text-align: right; }
+table.itemsets-zebra a { display: block; text-decoration: none; }
+table.itemsets-zebra td.min-width,
+table.itemsets-zebra th.min-width { width: 1%; }
+table.itemsets-zebra tr:hover td { 
+    background: #ffffe5; /* Цвет строк при наведении / Color of hover rows */
+}
+/* Шаблон itemsets-small-list.html / Template itemsets-small-list.html */
+.itemsets-table { border-left: 1px solid #000; border-top: 1px solid #000; width: 100%; text-align: left; }
+.itemsets-table td{ border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 5px; }
+/* Шаблон itemsets-ul.html / Template itemsets-ul.html */
+.itemsets-ul { list-style: circle; }
+.itemsets-ul li { margin-bottom: 10px; }
+
+/**
+ ** СИСТЕМНЫЕ СТИЛИ. НЕ ИЗМЕНЯТЬ.
+ ** SYSTEM STYLES. NOT MODIFY
+ **/
+.itemsets-skus-block { display: none; }

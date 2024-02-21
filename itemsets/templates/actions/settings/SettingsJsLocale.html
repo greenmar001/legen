@@ -1,0 +1,21 @@
+<script type="text/javascript">
+    $(function () {
+        waEditorAceInit({
+            'id': 'itemsets-js',
+            'ace_editor_container': 'itemsets-js-container',
+            'save_button': 'itemsets-save',
+            'type': 'js'
+        });
+        wa_editor.clearSelection();
+        $.itemsets.editor['itemsets-js'] = wa_editor;
+        $.itemsets.editor['itemsets-js'].on('change', function () {
+            $("#itemsets-form .restore-styles.template-js").show();
+        });
+    });
+</script>
+
+<!-- editor -->
+<textarea name="js" id="itemsets-js">{$script}</textarea>
+<div class="ace">
+    <div id="itemsets-js-container"></div>
+</div>
